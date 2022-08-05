@@ -1,7 +1,7 @@
-import { Inject, Injectable } from '@angular/core';
-import { UserDetailModel } from '../../../core/models/user-details.model';
+import { Injectable } from '@angular/core';
 import { } from 'googlemaps';
-import { DOCUMENT } from '@angular/common';
+import { UserDetailModel } from '../../../core/models/user-details.model';
+import { GoogleMapConstants } from '../constant/google-map.constant';
 
 @Injectable({
   providedIn: 'root'
@@ -13,22 +13,19 @@ export class GoogleMapsService {
   bounds = new google.maps.LatLngBounds();
 
   constructor(
-    @Inject(DOCUMENT) private document: HTMLDocument
   ) { }
 
   setMarkerDetails(markerDetails: any) {
     this.markerDetails = markerDetails;
-    this.initMap();
     this.setMarkersOnMap();
   }
 
   setMarkersOnMap() {
-    this.markerDetails.forEach(element => {
-      const mapLocation = new google.maps.LatLng(element.lat, element.long);
-      this.bounds.extend(mapLocation);
-      const locationMarker = this.setMarker(mapLocation);
-      this.setInfoWindow(element.thumbnail, element.title, element.first, element.last, locationMarker);
-    });
+    const currMarkerDetails = this.markerDetails[this.markerDetails.length - 1];
+    const mapLocation = new google.maps.LatLng(currMarkerDetails.lat, currMarkerDetails.long);
+    this.bounds.extend(mapLocation);
+    const locationMarker = this.setMarker(mapLocation);
+    this.setInfoWindow(currMarkerDetails.thumbnail, currMarkerDetails.title, currMarkerDetails.first, currMarkerDetails.last, locationMarker);
     this.map.fitBounds(this.bounds);
   }
 
@@ -36,7 +33,8 @@ export class GoogleMapsService {
     this.map = new google.maps.Map(
       document.getElementById("map") as HTMLElement,
       {
-        zoom: 2,
+        zoom: 0,
+        center: new google.maps.LatLng(GoogleMapConstants.centerOfMapLatLng),
       }
     );
   }

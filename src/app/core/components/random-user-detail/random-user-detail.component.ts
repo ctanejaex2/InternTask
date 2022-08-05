@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { forkJoin, Observable } from 'rxjs';
 import { GoogleMapsService } from 'src/app/modules/google-map/services/google-maps.service';
+import { RandomUserModel } from '../../models/random-user.model';
 import { UserDetailModel } from '../../models/user-details.model';
 import { RandomUserService } from '../../services/random-user.service';
 
@@ -19,11 +19,12 @@ export class RandomUserDetailComponent implements OnInit {
   ) { }
 
   ngOnInit(): void {
+    this.googleMapsService.initMap();
   }
 
   getRandomUserDetails() {
     this.randomUserService.updateRandomUserPage();
-    this.randomUserService.getRandomUserDetails().subscribe((data: any) => {
+    this.randomUserService.getRandomUserDetails().subscribe((data: RandomUserModel) => {
       const currUser = new UserDetailModel();
 
       currUser.lat = data.results[0].location.coordinates.latitude;
@@ -33,7 +34,7 @@ export class RandomUserDetailComponent implements OnInit {
       currUser.title = data.results[0].name.title;
       currUser.thumbnail = data.results[0].picture.thumbnail;
       this.userDetails.push(currUser);
-      
+
       this.googleMapsService.setMarkerDetails(this.userDetails);
     });
   }
