@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { map } from 'rxjs';
 import { GoogleMapsService } from 'src/app/modules/google-map/services/google-maps.service';
 import { RandomUserModel } from '../../models/random-user.model';
 import { UserDetailModel } from '../../models/user-details.model';
@@ -24,15 +25,17 @@ export class RandomUserDetailComponent implements OnInit {
 
   getRandomUserDetails() {
     this.randomUserService.updateRandomUserPage();
-    this.randomUserService.getRandomUserDetails().subscribe((data: RandomUserModel) => {
+    this.randomUserService.getRandomUserDetails().pipe(
+      map((data: any) => data.results[0])
+    ).subscribe((data: RandomUserModel) => {
       const currUser = new UserDetailModel();
 
-      currUser.lat = data.results[0].location.coordinates.latitude;
-      currUser.long = data.results[0].location.coordinates.longitude;
-      currUser.first = data.results[0].name.first;
-      currUser.last = data.results[0].name.last;
-      currUser.title = data.results[0].name.title;
-      currUser.thumbnail = data.results[0].picture.thumbnail;
+      currUser.lat = data.location.coordinates.latitude;
+      currUser.long = data.location.coordinates.longitude;
+      currUser.first = data.name.first;
+      currUser.last = data.name.last;
+      currUser.title = data.name.title;
+      currUser.thumbnail = data.picture.thumbnail;
       this.userDetails.push(currUser);
 
       this.googleMapsService.setMarkerDetails(this.userDetails);
