@@ -38,7 +38,7 @@ export class RandomUserDetailComponent implements OnInit {
       currUser.thumbnail = data.picture.thumbnail;
       this.userDetails.push(currUser);
 
-      this.googleMapsService.setMarkerDetails(this.userDetails);
+      this.googleMapsService.markerDetails$.next(currUser);
     });
   }
 }
