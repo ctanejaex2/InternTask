@@ -25,6 +25,7 @@ export class GoogleMapsService {
       {
         zoom: 0,
         center: new google.maps.LatLng(GoogleMapConstants.centerOfMapLatLng),
+        maxZoom: 5,
       }
     );
   }
